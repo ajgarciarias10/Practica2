@@ -32,9 +32,9 @@ public:
       * @tparam I
       */
       class Iterador{
+      public:
           //Donde apuntara cada nodo
           Nodo<T> *nodo;
-      public:
           //Constructor parametrizado
           Iterador(Nodo<T> *anodo): nodo(anodo){}
           bool fin(){ return nodo == nullptr;}
@@ -86,6 +86,16 @@ public:
       void insertaInicio(T& dato);
       //Insertando por el final
       void insertaFin(T& dato);
+      //Insertar por posicion
+      void inserta(Iterador &i,T &dato);
+      //Insertar por detras
+      void insertaDetras(Iterador &i,T &dato);
+      //Borrar por el inicio
+      void borrarInicio();
+      //Borrar por el final
+      void borrarFinal();
+      //Borrar por elemento
+      void borra(Iterador &i);
 };
 
     /**
@@ -196,6 +206,109 @@ public:
         if(!cabecera)
             cabecera = nuevoP;
         cola = nuevoP;
+    }
+    /**
+     * @brief Metodo que inserta en una determinada posicion siempre delante que el anterior
+     * @post Hacemos que en funcion de la posicion, inserte el nodo o por el inicio, o
+     * @tparam T
+     * @param i
+     * @param dato
+     */
+    template <class  T>
+    void ListaEnlazada<T>::inserta(Iterador &i, T &dato) {
+        //Si el iterador no ha llegado al final
+        if(!i.fin()){
+            ++tama;
+            //Comprobamos antes de hacer cualquier cosa
+            //Si  la posicion que queremos insertar el nodo es por el inciio
+            if(i.nodo == cabecera){
+                insertaInicio(dato);
+                //Esto lo que hace es volver a inserta pero sin hacer esta funcion de nueva
+                return;
+            }
+        }
+        //Caso general
+        Nodo <T> *anterior=0;
+        if(cabecera != cola){
+            anterior = cabecera;
+            //Hasta que no encontremos esa posicion vamos recorriendo
+            while(anterior->sig != i.nodo){
+                //Seguimos moviendonos entre nodos
+                anterior = anterior->sig;
+            }
+            //Si encontramos la posicion
+            //Creamos un nodo nuevo
+            Nodo<T> *nuevo = new Nodo<T>(dato,i.nodo);
+            //Le asignamos la posicion al anterior como siguiente el nuevo nodo que queriamos meter
+            anterior->sig=nuevo;
+        }
+
+    }
+    /**
+     * @brief Método Insertar por Detras
+     * @post Cogemos el nodo iterado y hacemos que sea apuntado por un nuevo nodo que hemos creado
+     * @tparam T
+     * @param i
+     * @param dato
+     */
+    template <class T>
+    void ListaEnlazada<T>::insertaDetras(Iterador &i, T &dato) {
+        //Si el iterador no ha llegado al final
+        if(!i.fin()){
+            ++tama;
+          //Creamos un nodo nuevo con el dato,y que apunte al nodo que habia antes que el para si moverlo a la drecha
+            Nodo<T> *nuevo = new Nodo<T>(dato,i.nodo->sig);
+            //Asignamos al nuevo nodo la posicion siguiente del iterador
+            i.nodo->sig = nuevo;
+            //Si el nodo iterado esta en la posicion cola
+            if(i.nodo == cola){
+                //Cola apuntara a nuevo y nuevo apuntara al que esta en cola
+                cola = nuevo;
+            }
+        }
+    }
+    /**
+     * @brief Borrar por el inicio
+     * @tparam T
+     */
+    template <class T>
+    void ListaEnlazada<T>::borrarInicio() {
+        Nodo<T> *borrado = cabecera;
+        //Lo que hacemos es apuntar al siguiente para borrar el primer nodo
+        cabecera = cabecera ->sig;
+        //Borramos el inicial
+        delete borrado;
+
+        //En caso que el que hayamos borrado es el ultimo
+        if(!cabecera)
+            cola = nullptr;
+    }
+    /**
+     * @brief Metodo que borra por el final
+     * @tparam T
+     */
+    template <class T>
+    void ListaEnlazada<T>::borrarFinal() {
+        Nodo<T> *anterior = nullptr;
+        if(cabecera != cola){
+            anterior = cabecera;
+            while(anterior->sig != cola)
+                anterior = anterior ->sig;
+            delete cola;
+            --tama;
+            cola = anterior;
+            if(anterior !=0)
+                anterior->sig = 0;
+        }
+        //En caso de que haya solo 1 o ninguno
+        else{
+            if(cabecera){
+                delete cabecera;
+                tama = 0;
+                cabecera = nullptr;
+                cola = nullptr;
+            }
+        }
     }
 
 #endif //PRACTICA2_LISTAENLAZADA_H
