@@ -50,7 +50,6 @@ public:
 
       };
       //Creamos los metodos públicos de la clase ListaEnlazada
-
       //Constructor por defecto
       ListaEnlazada<T>();
       //Constructor copia
@@ -96,6 +95,14 @@ public:
       void borrarFinal();
       //Borrar por elemento
       void borra(Iterador &i);
+      //Devolver el tamaño
+      int tam();
+      //operador +
+      ListaEnlazada<T> operator+(const ListaEnlazada &lista);
+      //Metodo concatena
+      ListaEnlazada<T> &concatena(const ListaEnlazada<T> &l);
+     //Destructor
+     ~ListaEnlazada();
 };
 
     /**
@@ -185,12 +192,12 @@ public:
      */
     template <class T>
     void ListaEnlazada<T>::insertaInicio(T &dato) {
+        //Aumentamos el tamaño de la lista
+        ++tama;
         Nodo <T> *nuevoP =new Nodo<T>(dato,cabecera);
         if(cola)
             cola = nuevoP;
         cabecera = nuevoP;
-        //Aumentamos el tamaño de la lista
-        ++tama;
     }
     /**
      * @Metodo que inserta por el final
@@ -199,6 +206,7 @@ public:
      */
     template <class T>
     void  ListaEnlazada<T>::insertaFin(T &dato) {
+        ++tama;
         Nodo <T> *nuevoP =new Nodo<T>(dato,0);
         if(cola)
             cola->sig = nuevoP;
@@ -243,6 +251,9 @@ public:
             anterior->sig=nuevo;
         }
 
+        if(cola == i.nodo){
+            insertaFin(dato);
+        }
     }
     /**
      * @brief Método Insertar por Detras
@@ -310,5 +321,134 @@ public:
             }
         }
     }
+/**
+ * @brief Metodo borrar por posicion
+ * @tparam T
+ * @param i
+ */
+    template <class T>
+    void ListaEnlazada<T>::borra(Iterador &i) {
+        if(!i.fin){
+            //Si quiere borrar por el principio
+            if(i.nodo == cabecera){
+                borrarInicio();
+                return;
+            }
+            //En caso de que no sea el principio aplicaremos el caso general
+            Nodo<T> *anterior = 0;
+            if(cabecera != cola){
+                anterior = cabecera;
+                //Recorremos hasta encontrar el nodo
+                while(anterior->sig != i.nodo){
+                    anterior = anterior ->sig;
+                }
+                //En caso de haber llegado
+                //Hacemos que al borrar el nodo el anterior al que hemos borrado apunte al siguiente
+                if(i.nodo != cola)
+                    anterior -> sig =i.nodo->sig;
+                    delete i.nodo;
+            }
+            //Caso por el final se borra igual al aplicar lo anterior
+            if(cola == i.nodo){
+               borrarFinal();
+            }
+        }
+
+    }
+/**
+ * @brief Metodo que devuelve el tmaaño de la lista
+ * @tparam T
+ * @return
+ */
+    template <class  T>
+    int ListaEnlazada<T>::tam() {
+        return tam();
+    }
+    /**
+     * @brief Metodo operator +
+     * @tparam T
+     * @param lista
+     * @return
+     */
+    template <class T>
+    ListaEnlazada<T> ListaEnlazada<T>::operator+(const ListaEnlazada<T> &lista) {
+        //Cogemos la actual lista enlazada
+        ListaEnlazada<T> list(*this);
+        //Creamos un puntero de tipo nodo que sera la cabecera
+        Nodo<T> *puntero = lista.cabecera;
+        //Mientras que el puntero no sea nulo
+        while(puntero){
+            Nodo<T> *newNodo = new Nodo(puntero->dato,0);
+            //Aumentamos el tamaño
+            lista.tama++;
+            //Caso 1 Si la lista esta vacía
+            if(lista.cabecera == nullptr ){
+                cabecera = newNodo;
+            }
+            //Caso 2 Si la cola no es nula
+            //Concatenamos por el final
+            if(lista.cola != 0){
+                cola -> sig = newNodo;
+            }
+            //Caso 3 Si es en la cola
+            lista.cola = newNodo;
+
+            puntero = puntero ->sig;
+
+        }
+        return lista;
+
+
+    }
+    /**
+     * @brief Metodo para concatenar listas
+     * @tparam T
+     * @param l
+     * @return
+     */
+    template<class T>
+    ListaEnlazada<T> &ListaEnlazada<T>::concatena(const ListaEnlazada<T> &l) {
+        //Caso 1 Lista que te dan esta vacia y la actual no lo esta
+        if(l.tama==0 && this->tama != 0)
+            return  l;
+        //Caso 2 Lista que te dan no esta vacia y la actual esta
+        if(l.tama==0 && this->tama != 0)
+            return  *this;
+        //Caso 3 Juntamos ambas listas
+        //El puntero ultimo de la lista se junta con la vecera de la otra
+        cola->sig=l.cabecera;
+        //Asignamos como nueva cola la cola de lista ultima
+        cola=l.cola;
+        //Les sumamos el tamaño
+        tama=tama+l.tama;
+
+        //Devolvemos la concatenacion
+        return  *this;
+
+
+    }
+    /**
+     * @brief Metodo destructor
+     * @tparam T
+     */
+    template<class T>
+    ListaEnlazada<T>::~ListaEnlazada() {
+        if(cabecera){
+            //Creamos esto por que vamos a ir borrando de la cabecera a la cola
+            Nodo<T> *aborrarElementos = cabecera;
+            while(aborrarElementos != nullptr){
+                cabecera = cabecera->sig;
+                delete aborrarElementos;
+                aborrarElementos = cabecera;
+            }
+            //Cuando acabe para curarnos en salud
+            cola= nullptr;
+        }
+
+
+
+    }
+
+
 
 #endif //PRACTICA2_LISTAENLAZADA_H
