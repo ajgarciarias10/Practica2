@@ -17,7 +17,7 @@
 using namespace  std;
 class Aeropuerto {
 private:
-    string id = "",iata = "",ident = "", tipo =" ", nombre = "",continente = " ", iso_pais = "";
+    string id = "",iata = "",t = "", tipo =" ", nombre = "",continente = " ", iso_pais = "";
     UTM posicion  ;
 public:
     //Constructor por defecto
@@ -25,7 +25,7 @@ public:
     //Constructor copia
     Aeropuerto(const Aeropuerto &origen);
     //Constructor parametrizado
-    Aeropuerto(const string &id,const string &iden,const string &iata,
+    Aeropuerto(const string &id,const string &iata,
                const string &tipo, const string &nombre,
                const string &continente, const string &iso_pais, UTM posicion);
     //Operador ==
@@ -39,8 +39,7 @@ public:
 
     //Get ID
     const string &getId() const;
-    //Get Identificacion
-    const string &getIdent() const;
+
     //Get Nombre
     const string &getNombre() const;
     //Get Continente
@@ -49,6 +48,8 @@ public:
     void setId(const string &id);
 
     const string &getIsoPais() const;
+
+    void setIata(const string &iata);
 };
 
 

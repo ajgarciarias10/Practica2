@@ -9,15 +9,10 @@
 #include "Ruta.h"
 #include "ListaEnlazada.h"
 class VuelaFlight {
-//Declaramos los metodos privados
-private:
-    VDinamico<Aeropuerto> aeropuertos;
-    ListaEnlazada<Ruta> rutas;
-    //AñadirNuevaRuta
-    void addNuevaRuta(Aeropuerto *idAerOrig, Aeropuerto * idAerDest, string aerolinea);
-
 //Declaramos los metodo publicos y constructores
 public:
+    VDinamico<Aeropuerto> aeropuertos;
+    ListaEnlazada<Ruta> rutas;
     //Constructor por defecto
     VuelaFlight();
     //Constructor copia
@@ -33,6 +28,10 @@ public:
     ListaEnlazada<Ruta*> buscarRutasOrigen (string idAerOrig);
     //Buscar AeropuertoPais
     VDinamico<Aeropuerto*> buscarAeropuertoPais(string pais);
+    //AñadirNuevoAeropuerto
+    void añadeAeropuerto(const Aeropuerto *aeropuerto);
+    //AñadirNuevaRuta
+    void addNuevaRuta(Aeropuerto *idAerOrig, Aeropuerto * idAerDest, string aerolinea);
 
 };
 

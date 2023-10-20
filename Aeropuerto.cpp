@@ -6,7 +6,7 @@
 /**
  * @brief Constructor por defecto
  */
-Aeropuerto::Aeropuerto() : id(""), ident(""), tipo(""), nombre(""), continente(""),
+Aeropuerto::Aeropuerto() : id(""), iata(""), tipo(""), nombre(""), continente(""),
                            iso_pais(""),posicion(UTM()) {
 }
 
@@ -14,19 +14,18 @@ Aeropuerto::Aeropuerto() : id(""), ident(""), tipo(""), nombre(""), continente("
  * @brief   Metodo Constructor de copia
  * @param origen
  */
-Aeropuerto::Aeropuerto(const Aeropuerto &origen):id(origen.id),ident(origen.ident),tipo(origen.tipo),nombre(origen.nombre),continente(origen.continente),iso_pais(origen.iso_pais),posicion(origen.posicion) {}
+Aeropuerto::Aeropuerto(const Aeropuerto &origen):id(origen.id),iata(origen.iata),tipo(origen.tipo),nombre(origen.nombre),continente(origen.continente),iso_pais(origen.iso_pais),posicion(origen.posicion) {}
 /**
  * @brief Constructor parametrizado
  * @param id
- * @param iden
  * @param tipo
  * @param nombre
  * @param continente
  * @param iso_pais
  * @param posicion
  */
-Aeropuerto::Aeropuerto(const string &id,const string &iata, const string &iden, const string &tipo, const string &nombre,
-                       const string &continente, const string &iso_pais, UTM posicion) : id(id),iata(iata),ident(iden),tipo(tipo),nombre(nombre),continente(continente),iso_pais(iso_pais),posicion(posicion) {
+Aeropuerto::Aeropuerto(const string &id,const string &iata, const string &tipo, const string &nombre,
+                       const string &continente, const string &iso_pais, UTM posicion) : id(id),iata(iata),tipo(tipo),nombre(nombre),continente(continente),iso_pais(iso_pais),posicion(posicion) {
 
 }
 bool Aeropuerto::operator==(const Aeropuerto &origen) {
@@ -44,7 +43,6 @@ Aeropuerto &Aeropuerto::operator =(const Aeropuerto &origen){
         //Asignamos a cada operando  su valor
         id= origen.id;
         iata = origen.iata;
-        ident = origen.ident;
         tipo = origen.tipo;
         nombre = origen.nombre;
         continente = origen.continente;
@@ -72,13 +70,7 @@ bool Aeropuerto::operator<(const Aeropuerto &origen) const {
 const string &Aeropuerto::getId() const {
     return id;
 }
-/**
- * @brief Get  Identificacion
- * @return
- */
-const string &Aeropuerto::getIdent() const {
-    return ident;
-}
+
 /**
  * @brief Get  Nombre
  * @return
@@ -108,6 +100,10 @@ const string &Aeropuerto::getIata() const {
 
 const string &Aeropuerto::getIsoPais() const {
     return iso_pais;
+}
+
+void Aeropuerto::setIata(const string &iata) {
+    Aeropuerto::iata = iata;
 }
 
 

@@ -42,3 +42,5 @@ Aeropuerto *Ruta::getDestino() const {
 void Ruta::setDestino(Aeropuerto *destino) {
     Ruta::destino = destino;
 }
+
+Ruta::~Ruta() {}

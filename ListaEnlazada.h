@@ -89,7 +89,7 @@ public:
       //Insertar por posicion
       void inserta(Iterador &i,const T &dato);
       //Insertar por detras
-      void insertaDetras(Iterador &i,T &dato);
+      void insertaDetras(Iterador &i,const T &dato);
       //Borrar por el inicio
       void borrarInicio();
       //Borrar por el final
@@ -269,7 +269,7 @@ public:
      * @param dato
      */
     template <class T>
-    void ListaEnlazada<T>::insertaDetras(Iterador &i, T &dato) {
+    void ListaEnlazada<T>::insertaDetras(ListaEnlazada::Iterador &i, const T &dato) {
         //Si el iterador no ha llegado al final
         if(!i.fin()){
             ++tama;
@@ -333,8 +333,9 @@ public:
  * @param i
  */
     template <class T>
-    void ListaEnlazada<T>::borra(Iterador &i) {
+    void ListaEnlazada<T>::borra(ListaEnlazada::Iterador &i) {
         if(!i.fin){
+            tama--;
             //Si quiere borrar por el principio
             if(i.nodo == cabecera){
                 borrarInicio();

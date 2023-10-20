@@ -84,3 +84,25 @@ void VuelaFlight::addNuevaRuta(Aeropuerto *idAerOrig, Aeropuerto * idAerDest, st
     rutas.insertaFin(ruta);
 
 }
+/**
+ * @brief Destructor
+ */
+VuelaFlight::~VuelaFlight() {
+}
+/**
+ * @brief Constructor Copia
+ * @param vl
+ */
+
+VuelaFlight::VuelaFlight(const VuelaFlight &vl) : aeropuertos(vl.aeropuertos), rutas(vl.rutas){
+
+}
+/**
+ * @brief Añade aeropuerto
+ * @param aeropuerto
+ */
+
+void VuelaFlight::añadeAeropuerto(const Aeropuerto *aeropuerto) {
+    aeropuertos.insertar(*aeropuerto);
+
+}
