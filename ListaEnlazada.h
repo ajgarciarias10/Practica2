@@ -4,6 +4,8 @@
 #include "stdexcept"
 #ifndef PRACTICA2_LISTAENLAZADA_H
 #define PRACTICA2_LISTAENLAZADA_H
+#include "iostream"
+using namespace std;
 
 template<class T>
 class ListaEnlazada {
@@ -32,9 +34,10 @@ public:
       * @tparam I
       */
       class Iterador{
-      public:
+      private:
           //Donde apuntara cada nodo
           Nodo<T> *nodo;
+      public:
           //Constructor parametrizado
           Iterador(Nodo<T> *anodo= nullptr): nodo(anodo){}
           bool fin(){ return nodo == nullptr;}
@@ -49,6 +52,9 @@ public:
           //Destructor de la clase Iterador
           ~Iterador(){};
 
+          Nodo<T> *getNodo() const {
+              return nodo;
+          }
       };
       //Creamos los metodos públicos de la clase ListaEnlazada
       //Constructor por defecto
@@ -219,7 +225,8 @@ public:
         //Si la lista esta vacia
         if(!cabecera)
             cabecera = nuevoP;
-        cola = nuevoP;
+       // cola = nuevoP;
+
     }
     /**
      * @brief Metodo que inserta en una determinada posicion siempre delante que el anterior
@@ -235,7 +242,7 @@ public:
             ++tama;
             //Comprobamos antes de hacer cualquier cosa
             //Si  la posicion que queremos insertar el nodo es por el inciio
-            if(i.nodo == cabecera){
+            if(i.getNodo() == cabecera){
                 insertaInicio(dato);
                 //Esto lo que hace es volver a inserta pero sin hacer esta funcion de nueva
                 return;
@@ -246,18 +253,18 @@ public:
         if(cabecera != cola){
             anterior = cabecera;
             //Hasta que no encontremos esa posicion vamos recorriendo
-            while(anterior->sig != i.nodo){
+            while(anterior->sig != i.getNodo()){
                 //Seguimos moviendonos entre nodos
                 anterior = anterior->sig;
             }
             //Si encontramos la posicion
             //Creamos un nodo nuevo
-            Nodo<T> *nuevo = new Nodo<T>(dato,i.nodo);
+            Nodo<T> *nuevo = new Nodo<T>(dato,i.getNodo());
             //Le asignamos la posicion al anterior como siguiente el nuevo nodo que queriamos meter
             anterior->sig=nuevo;
         }
 
-        if(cola == i.nodo){
+        if(cola == i.getNodo()){
             insertaFin(dato);
         }
     }
@@ -274,11 +281,11 @@ public:
         if(!i.fin()){
             ++tama;
           //Creamos un nodo nuevo con el dato,y que apunte al nodo que habia antes que el para si moverlo a la drecha
-            Nodo<T> *nuevo = new Nodo<T>(dato,i.nodo->sig);
+            Nodo<T> *nuevo = new Nodo<T>(dato,i.getNodo()->sig);
             //Asignamos al nuevo nodo la posicion siguiente del iterador
-            i.nodo->sig = nuevo;
+            i.getNodo()->sig = nuevo;
             //Si el nodo iterado esta en la posicion cola
-            if(i.nodo == cola){
+            if(i.getNodo() == cola){
                 //Cola apuntara a nuevo y nuevo apuntara al que esta en cola
                 cola = nuevo;
             }
@@ -309,13 +316,13 @@ public:
         Nodo<T> *anterior = nullptr;
         if(cabecera != cola){
             anterior = cabecera;
+            --tama;
             while(anterior->sig != cola)
                 anterior = anterior ->sig;
             delete cola;
-            --tama;
+
             cola = anterior;
-            if(anterior !=0)
-                anterior->sig = 0;
+            anterior->sig = nullptr;
         }
         //En caso de que haya solo 1 o ninguno
         else{
@@ -333,11 +340,11 @@ public:
  * @param i
  */
     template <class T>
-    void ListaEnlazada<T>::borra(ListaEnlazada::Iterador &i) {
-        if(!i.fin){
+    void ListaEnlazada<T>::borra(Iterador &i) {
+        if(!i.fin()){
             tama--;
             //Si quiere borrar por el principio
-            if(i.nodo == cabecera){
+            if(i.getNodo() == cabecera){
                 borrarInicio();
                 return;
             }
@@ -346,17 +353,17 @@ public:
             if(cabecera != cola){
                 anterior = cabecera;
                 //Recorremos hasta encontrar el nodo
-                while(anterior->sig != i.nodo){
+                while(anterior->sig != i.getNodo()){
                     anterior = anterior ->sig;
                 }
                 //En caso de haber llegado
                 //Hacemos que al borrar el nodo el anterior al que hemos borrado apunte al siguiente
-                if(i.nodo != cola)
-                    anterior -> sig =i.nodo->sig;
-                    delete i.nodo;
+                if(i.getNodo() != cola)
+                    anterior -> sig =i.getNodo()->sig;
+                    delete i.getNodo();
             }
             //Caso por el final se borra igual al aplicar lo anterior
-            if(cola == i.nodo){
+            if(cola == i.getNodo()){
                borrarFinal();
             }
         }
