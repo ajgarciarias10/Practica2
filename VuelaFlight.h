@@ -13,8 +13,13 @@ class VuelaFlight {
 private:
     VDinamico<Aeropuerto> aeropuertos;
     ListaEnlazada<Ruta> rutas;
+    //AñadirNuevaRuta
+    void addNuevaRuta(Aeropuerto *idAerOrig, Aeropuerto * idAerDest, string aerolinea);
+
 //Declaramos los metodo publicos y constructores
 public:
+    //Constructor por defecto
+    VuelaFlight();
     //Constructor copia
     VuelaFlight(const VuelaFlight &vl);
     //Constructor parametrizado
@@ -28,8 +33,6 @@ public:
     ListaEnlazada<Ruta*> buscarRutasOrigen (string idAerOrig);
     //Buscar AeropuertoPais
     VDinamico<Aeropuerto*> buscarAeropuertoPais(string pais);
-    //AñadirNuevaRuta
-    void addNuevaRuta(string idAerOrig, string idAerDest, string aerolinea);
 
 };
 

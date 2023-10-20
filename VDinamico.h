@@ -51,6 +51,10 @@ public :
     //Obterner el tamaño logico del vector
     unsigned int  tamlog();
 
+    unsigned long getTamafis() const {
+        return tamafis;
+    }
+
 };
 /**
  * @brief Constructor por defecto

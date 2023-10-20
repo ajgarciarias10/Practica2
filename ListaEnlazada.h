@@ -17,7 +17,7 @@ class ListaEnlazada {
          N dato;
          Nodo *sig;
         //Constructor parametrizado
-        Nodo(N &aDato, Nodo *aSig= nullptr):
+        Nodo(const N &aDato, Nodo *aSig= nullptr):
             dato(aDato),sig(aSig){}
         //Destructor
         ~Nodo(){}
@@ -36,7 +36,7 @@ public:
           //Donde apuntara cada nodo
           Nodo<T> *nodo;
           //Constructor parametrizado
-          Iterador(Nodo<T> *anodo): nodo(anodo){}
+          Iterador(Nodo<T> *anodo= nullptr): nodo(anodo){}
           bool fin(){ return nodo == nullptr;}
           //Accedemos al siguiente nodo
           void siguiente(){
@@ -46,7 +46,8 @@ public:
           T &dato(){ return  nodo->dato;}
           //Accedemos a la direccion de memoria del nodo
           T &operator*(){ return  nodo->dato;}
-
+          //Destructor de la clase Iterador
+          ~Iterador(){};
 
       };
       //Creamos los metodos públicos de la clase ListaEnlazada
@@ -80,13 +81,13 @@ public:
 
       }
       //Objeto iterador para iterar sobre las listas
-      Iterador iterador() const;
+      Iterador iterador() ;
       //Insertando por el inicio
-      void insertaInicio(T& dato);
+      void insertaInicio(const T& dato);
       //Insertando por el final
-      void insertaFin(T& dato);
+      void insertaFin(const T& dato);
       //Insertar por posicion
-      void inserta(Iterador &i,T &dato);
+      void inserta(Iterador &i,const T &dato);
       //Insertar por detras
       void insertaDetras(Iterador &i,T &dato);
       //Borrar por el inicio
@@ -141,7 +142,7 @@ public:
      * @return
      */
     template<class T>
-    ListaEnlazada<T> &ListaEnlazada<T>::operator = (const ListaEnlazada<T> &origen){
+    ListaEnlazada<T> &ListaEnlazada<T>::operator=(const ListaEnlazada<T> &origen){
         //Comprobamos que no sea la misma lista
         if(this!=origen){
             //Si entra hay cabecera si no eestaria vacia
@@ -162,14 +163,19 @@ public:
 
         }
         //Actualizamos la cabecera
-        cabecera = new Nodo<T>(origen.cabecera->dato, nullptr);
-        //Sobreescribimos en la nueva lista la lista de origen
-        Nodo<T> *p = new Nodo<T>(p->dato, nullptr);
+        cabecera = nullptr;
+        cola= nullptr;
+        Nodo<T> *p = origen.cabecera;
+        tama = origen.tama;
         //Mientras podamos recorrer la lista
         while(p){
+            //Sobreescribimos en la nueva lista la lista de origen
+            Nodo<T> *p = new Nodo<T>(p->dato, nullptr);
             //Si hay algo  en la cola asignamos a lo que apunta la cola el nuevo puntero
             if(cola)
                 cola->sig  = p;
+            if(!cabecera)
+                cabecera = p;
             cola = p;
             //Vamos recorriendo hasta que el puntero sea nulo
             p = p->sig;
@@ -181,8 +187,8 @@ public:
      * @tparam T
      * @return
      */
-    template <class T>
-    ListaEnlazada<T>::Iterador ListaEnlazada<T>::iterador() const {
+    template <typename T>
+    typename ListaEnlazada<T>::Iterador ListaEnlazada<T>::iterador()  {
         return  Iterador(cabecera);
     }
     /**
@@ -191,7 +197,7 @@ public:
      * @param dato
      */
     template <class T>
-    void ListaEnlazada<T>::insertaInicio(T &dato) {
+    void ListaEnlazada<T>::insertaInicio(const T &dato) {
         //Aumentamos el tamaño de la lista
         ++tama;
         Nodo <T> *nuevoP =new Nodo<T>(dato,cabecera);
@@ -205,9 +211,9 @@ public:
      * @param dato
      */
     template <class T>
-    void  ListaEnlazada<T>::insertaFin(T &dato) {
+    void  ListaEnlazada<T>::insertaFin(const T &dato) {
         ++tama;
-        Nodo <T> *nuevoP =new Nodo<T>(dato,0);
+        Nodo <T> *nuevoP = new Nodo<T>(dato,0);
         if(cola)
             cola->sig = nuevoP;
         //Si la lista esta vacia
@@ -223,7 +229,7 @@ public:
      * @param dato
      */
     template <class  T>
-    void ListaEnlazada<T>::inserta(Iterador &i, T &dato) {
+    void ListaEnlazada<T>::inserta(Iterador &i, const T &dato) {
         //Si el iterador no ha llegado al final
         if(!i.fin()){
             ++tama;
@@ -379,8 +385,6 @@ public:
         //Mientras que el puntero no sea nulo
         while(puntero){
             Nodo<T> *newNodo = new Nodo(puntero->dato,0);
-            //Aumentamos el tamaño
-            lista.tama++;
             //Caso 1 Si la lista esta vacía
             if(lista.cabecera == nullptr ){
                 cabecera = newNodo;
@@ -396,6 +400,8 @@ public:
             puntero = puntero ->sig;
 
         }
+        tama = lista.tama+ tama;
+
         return lista;
 
 

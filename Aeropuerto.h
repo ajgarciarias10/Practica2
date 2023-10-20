@@ -35,6 +35,8 @@ public:
     //Operador <
     bool operator< (const Aeropuerto &origen) const;
 
+    const string &getIata() const;
+
     //Get ID
     const string &getId() const;
     //Get Identificacion
@@ -45,6 +47,8 @@ public:
     const string &getContinente() const;
     //Set Id
     void setId(const string &id);
+
+    const string &getIsoPais() const;
 };
 
 

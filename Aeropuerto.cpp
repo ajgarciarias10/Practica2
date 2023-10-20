@@ -102,6 +102,14 @@ void Aeropuerto::setId(const string &id) {
     Aeropuerto::id = id;
 }
 
+const string &Aeropuerto::getIata() const {
+    return iata;
+}
+
+const string &Aeropuerto::getIsoPais() const {
+    return iso_pais;
+}
+
 
 
 
