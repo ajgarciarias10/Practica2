@@ -92,6 +92,7 @@ int main(int argc, const char * argv[]) {
         Aeropuerto *destino = nullptr;
 #pragma endregion
 #pragma region Carga aeropuertos
+    clock_t lecturaAero = clock();
     is.open("../aeropuertos_v2.csv"); //carpeta de proyecto
     if ( is.good() ) {
         while (getline(is, fila)) {
@@ -122,10 +123,14 @@ int main(int argc, const char * argv[]) {
         //Tras leer ordenamos el vector por Codigo Iata
         vl.aeropuertos.ordenar();
         is.close();
+    }else{
+        std::cout << "Error de apertura en archivo" << std::endl;
     }
+    std::cout << "Tiempo lectura de aeropuertos: " << ((clock() - lecturaAero) / (float) CLOCKS_PER_SEC) << " segs." << std::endl;
 
 #pragma endregion
 #pragma region Carga Ruta
+    clock_t lecturaRutas = clock();
     is.open("../rutas_v1.csv"); //carpeta de proyecto
     if ( is.good() ) {
         while (getline(is, fila)) {
@@ -154,7 +159,11 @@ int main(int argc, const char * argv[]) {
             }
         }
 
+    } else{
+        std::cout << "Error de apertura en archivo" << std::endl;
     }
+
+    std::cout << "Tiempo lectura de las rutas: " << ((clock() - lecturaRutas) / (float) CLOCKS_PER_SEC) << " segs." << std::endl;
 #pragma endregion
 #pragma region Programa de prueba 2
 #pragma  region Apartado 2 y Apartado 3
@@ -212,39 +221,51 @@ int main(int argc, const char * argv[]) {
 
 #pragma region Buscar rutas existentes Espana y Portugal
     cout<<"Buscar si hay ruta  Espana con Portugal"<<endl;
+    clock_t busquedaESPT = clock();
     //1º Busco aeropuertos españoles
     VDinamico<Aeropuerto*> aeroESP=vl.buscarAeropuertoPais("ES");
+    int nrutasESPPT=0;
     for (int i = 0; i < aeroESP.tamlog() ; ++i) {
         //2º Busco las rutas desde España a donde sea
         ListaEnlazada<Ruta *> listaDRutas(vl.buscarRutasOrigen(aeroESP[i]->getIata()));
         ListaEnlazada<Ruta *> :: Iterador it = listaDRutas.iterador();
+
         //3º Itero la lista dde España  hasta encontrar un destino  que sea PT
         while(!it.fin()){
             if(it.dato()->getDestino()->getIsoPais() == "PT"){
+                nrutasESPPT++;
                 cout<< "Aerolinea " << it.dato()->getAerolinea()<< "\n"
                     <<"Ruta encontrada de : "<<  it.dato()->getOrigen()->getIata() << "-to-> " << it.dato()->getDestino()->getIata()<<endl;
             }
             it.siguiente();
         }
     }
+    std::cout <<"Numero de rutas ESP A PT: "<< nrutasESPPT<< std::endl;
+    std::cout << "Tiempo de busqueda de rutas de España hacia  Portugal: " << ((clock() - busquedaESPT) / (float) CLOCKS_PER_SEC) << " segs." << std::endl;
     cout<<"--------------------------------------"<<endl;
 #pragma region Buscar rutas existentes Portugal y España
+    clock_t busquedaPTES = clock();
     cout<<"Buscar si hay ruta  Portugal con Espana"<<endl;
     //1º Busco aeropuertos españoles
     VDinamico<Aeropuerto*> aeroPOT=vl.buscarAeropuertoPais("PT");
+    int nrutasPTESP=0;
     for (int i = 0; i < aeroPOT.tamlog() ; ++i) {
+
         //2º Busco las rutas desde España a donde sea
         ListaEnlazada<Ruta *> listaDRutas(vl.buscarRutasOrigen(aeroPOT[i]->getIata()));
         ListaEnlazada<Ruta *> :: Iterador it = listaDRutas.iterador();
         //3º Itero la lista dde España  hasta encontrar un destino  que sea PT
         while(!it.fin()){
             if(it.dato()->getDestino()->getIsoPais() == "ES"){
+                nrutasPTESP++;
                 cout<< "Aerolinea " << it.dato()->getAerolinea()<< "\n"
                     <<"Ruta encontrada de : "<<  it.dato()->getOrigen()->getIata() << "-to-> " << it.dato()->getDestino()->getIata()<<endl;
             }
             it.siguiente();
         }
     }
+    std::cout <<"Numero de rutas PT A ESP: "<< nrutasPTESP<< std::endl;
+    std::cout << "Tiempo de busqueda de rutas de Portugal hacia España: " << ((clock() - busquedaPTES) / (float) CLOCKS_PER_SEC) << " segs." << std::endl;
     cout<<"--------------------------------------"<<endl;
 #pragma  endregion
 
