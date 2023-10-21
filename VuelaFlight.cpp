@@ -24,12 +24,11 @@ Ruta &VuelaFlight::buscarRutasOriDeS(string idAerOrig, string idAerDest) {
         string origenBusq = i.dato().getOrigen()->getIata();
         string destinoBusq = i.dato().getDestino()->getIata();
         //En caso de que se encuentre
-        if(origenBusq==idAerOrig && destinoBusq==idAerDest){
+        if(origenBusq==idAerOrig && destinoBusq==idAerDest)
             //Devolvemos el dato
             return i.dato();
-        }
     }
-    throw std::invalid_argument("La ruta no ha sido encontrado" "\f" "Intente cambiar su origen y destino" );
+    throw std::invalid_argument("La ruta no ha sido encontrado" "\n" "Intente cambiar su origen y destino" );
 }
 /**
  * @brief BuscarRutasOrigen
@@ -63,7 +62,7 @@ VDinamico<Aeropuerto * > VuelaFlight::buscarAeropuertoPais(string pais) {
     //Donde lo vamos a meter
     VDinamico<Aeropuerto*> encontrado;
     //Recorremos el tamaño fisico
-    for (int i = 0; i < aeropuertos.getTamafis(); ++i) {
+    for (int i = 0; i < aeropuertos.tamlog(); ++i) {
         if(aeropuertos[i].getIsoPais() == pais){
             //Insertamso el vector de aeropuertos
             encontrado.insertar(&aeropuertos[i]);
@@ -94,9 +93,7 @@ VuelaFlight::~VuelaFlight() {
  * @param vl
  */
 
-VuelaFlight::VuelaFlight(const VuelaFlight &vl) : aeropuertos(vl.aeropuertos), rutas(vl.rutas){
-
-}
+VuelaFlight::VuelaFlight(const VuelaFlight &vl) : aeropuertos(vl.aeropuertos), rutas(vl.rutas){}
 /**
  * @brief Añade aeropuerto
  * @param aeropuerto

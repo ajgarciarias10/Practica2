@@ -9,14 +9,23 @@
 #include "VuelaFlight.h"
 
 using  namespace std;
-
+/**
+ * @brief Practica 2 EEDD
+ * @date 19/10/2023
+ * @author Antonio José Garcia Arias, ajga001@red.ujaen.es
+ * @author Abraham Garcia Hurtado, agh00040@red.ujaen.es
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, const char * argv[]) {
-
+    VuelaFlight vl;
     ifstream is;
     stringstream  columnas;
     string fila;
-    clock_t t_total = clock();
-#pragma region Uso de listas
+
+/*
+#pragma region Programa de Prueba 1
     ListaEnlazada<int>::Iterador it;
     ListaEnlazada<int> listaEnlazada;
 
@@ -61,8 +70,9 @@ int main(int argc, const char * argv[]) {
     }
     std::cout<<std::endl;
 #pragma endregion
-    //region Aeropuerto valores
-        VuelaFlight vl;
+*/
+#pragma region Aeropuerto valores
+
         float latitud, longitud;
         string id = "";
         string iata = "";
@@ -73,15 +83,15 @@ int main(int argc, const char * argv[]) {
         string longitud_str="";
         string continente="";
         string iso_pais="";
-    //endregion
-    //region Valores Rutas
+#pragma endregion
+#pragma region Valores Rutas
         string aerolinea = "";
         string  origen2 = "";
         string destino2 = "";
         Aeropuerto *origen = nullptr;
         Aeropuerto *destino = nullptr;
-    //endregion
-    //region Carga aeropuertos
+#pragma endregion
+#pragma region Carga aeropuertos
     is.open("../aeropuertos_v2.csv"); //carpeta de proyecto
     if ( is.good() ) {
         while (getline(is, fila)) {
@@ -111,18 +121,17 @@ int main(int argc, const char * argv[]) {
         }
         //Tras leer ordenamos el vector por Codigo Iata
         vl.aeropuertos.ordenar();
-
+        is.close();
     }
 
-  //endregion
-    //region Carga Ruta
+#pragma endregion
+#pragma region Carga Ruta
     is.open("../rutas_v1.csv"); //carpeta de proyecto
     if ( is.good() ) {
         while (getline(is, fila)) {
             //¿Se ha leído una nueva fila?
             if (fila != "") {
                 columnas.str(fila);
-                //formato de fila: id;ident;tipo;nombre;latitud;longitud;continente;iso_pais
                 getline(columnas, aerolinea, ';'); //leemos caracteres hasta encontrar y omitir ';'
                 getline(columnas, origen2, ';'); //leemos caracteres hasta encontrar y omitir ';'
                 getline(columnas, destino2, ';'); //leemos caracteres hasta encontrar y omitir ';'
@@ -146,7 +155,103 @@ int main(int argc, const char * argv[]) {
         }
 
     }
-    //endregion
+#pragma endregion
+#pragma region Programa de prueba 2
+#pragma  region Apartado 2 y Apartado 3
+    try {
+        cout<<"Buscar si hay ruta entre el aeropuerto del Barcelona con el de Estambul"<<endl;
+        //Buscar si hay ruta entre el aeropuerto del Barcelona con el de Estambul
+        vl.buscarRutasOriDeS("BCN", "IST");
+        cout<<"Se ha encontrado la ruta de BCN a IST"<<endl;
+        cout<<"--------------------------------------"<<endl;
 
+       //Buscar si hay ruta entre el aeropuerto de Granada Jaen, con algun aeropuerto ingles
+        cout<<"Buscar si hay ruta entre el aeropuerto de Granada Jaen, con algun aeropuerto ingles"<<endl;
+       //1º Busco las rutas desde granada a donde sea
+        ListaEnlazada<Ruta *> listaDRutas(vl.buscarRutasOrigen("GRX"));
+        ListaEnlazada<Ruta *> :: Iterador i = listaDRutas.iterador();
+        //2º Itero la lista de Ruta de Granada hasta encontrar un destion que sea GB
+        while(!i.fin()){
+            if(i.dato()->getDestino()->getIsoPais() == "GB"){
+                cout<< "Aerolinea " << i.dato()->getAerolinea()<< "\n"
+                    <<"Ruta encontrada de : "<< "GRX" << "--- " << i.dato()->getDestino()->getNombre()<<endl;
+            }
+            i.siguiente();
+        }
+
+        cout<<"--------------------------------------"<<endl;
+    }catch (invalid_argument &e){
+        cout<<e.what()<<endl;
+    }
+#pragma  endregion
+#pragma region Apartado 4
+    //Añadir en O(1) ruta entre aeropuerto Granada-Jaen con el de Paris de la compañia IBE
+    //Para ello tendremos que aplicar lo siguiente tendre que buscar el
+    // aeropuerto de Granada Jaen donde esta en el vector dinammico de aeropuertos
+    //Asi mismo con el de Paris
+    Aeropuerto aeroport;
+    aeroport.setIata("GRX");
+    int posGar=vl.aeropuertos.busquedaBinaria(aeroport);
+    aeroport.setIata("CDG");
+    int posCDG=vl.aeropuertos.busquedaBinaria(aeroport);
+    if(posGar != -1  && posCDG != -1)
+        vl.addNuevaRuta(&vl.aeropuertos[posGar],&vl.aeropuertos[posCDG],"IBE");
+        vl.addNuevaRuta(&vl.aeropuertos[posCDG],&vl.aeropuertos[posGar],"IBE");
+
+    // Compruebo si hay alguna ruta desde Granada a CDG
+    vl.buscarRutasOriDeS("GRX", "CDG");
+    cout<<"Se ha encontrado la ruta de GRX a CDG"<<endl;
+    cout<<"--------------------------------------"<<endl;
+    // Compruebo si hay alguna ruta desde CDG a Granada
+    vl.buscarRutasOriDeS("CDG", "GRX");
+    cout<<"Se ha encontrado la ruta de CDG a GRX"<<endl;
+    cout<<"--------------------------------------"<<endl;
+
+#pragma  endregion
+#pragma  region Apartado 5
+
+#pragma region Buscar rutas existentes Espana y Portugal
+    cout<<"Buscar si hay ruta  Espana con Portugal"<<endl;
+    //1º Busco aeropuertos españoles
+    VDinamico<Aeropuerto*> aeroESP=vl.buscarAeropuertoPais("ES");
+    for (int i = 0; i < aeroESP.tamlog() ; ++i) {
+        //2º Busco las rutas desde España a donde sea
+        ListaEnlazada<Ruta *> listaDRutas(vl.buscarRutasOrigen(aeroESP[i]->getIata()));
+        ListaEnlazada<Ruta *> :: Iterador it = listaDRutas.iterador();
+        //3º Itero la lista dde España  hasta encontrar un destino  que sea PT
+        while(!it.fin()){
+            if(it.dato()->getDestino()->getIsoPais() == "PT"){
+                cout<< "Aerolinea " << it.dato()->getAerolinea()<< "\n"
+                    <<"Ruta encontrada de : "<<  it.dato()->getOrigen()->getIata() << "-to-> " << it.dato()->getDestino()->getIata()<<endl;
+            }
+            it.siguiente();
+        }
+    }
+    cout<<"--------------------------------------"<<endl;
+#pragma region Buscar rutas existentes Portugal y España
+    cout<<"Buscar si hay ruta  Portugal con Espana"<<endl;
+    //1º Busco aeropuertos españoles
+    VDinamico<Aeropuerto*> aeroPOT=vl.buscarAeropuertoPais("PT");
+    for (int i = 0; i < aeroPOT.tamlog() ; ++i) {
+        //2º Busco las rutas desde España a donde sea
+        ListaEnlazada<Ruta *> listaDRutas(vl.buscarRutasOrigen(aeroPOT[i]->getIata()));
+        ListaEnlazada<Ruta *> :: Iterador it = listaDRutas.iterador();
+        //3º Itero la lista dde España  hasta encontrar un destino  que sea PT
+        while(!it.fin()){
+            if(it.dato()->getDestino()->getIsoPais() == "ES"){
+                cout<< "Aerolinea " << it.dato()->getAerolinea()<< "\n"
+                    <<"Ruta encontrada de : "<<  it.dato()->getOrigen()->getIata() << "-to-> " << it.dato()->getDestino()->getIata()<<endl;
+            }
+            it.siguiente();
+        }
+    }
+    cout<<"--------------------------------------"<<endl;
+#pragma  endregion
+
+
+#pragma    endregion
+
+#pragma endregion
+#pragma  endregion
     return 0;
 }

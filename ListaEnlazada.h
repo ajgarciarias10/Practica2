@@ -218,14 +218,15 @@ public:
      */
     template <class T>
     void  ListaEnlazada<T>::insertaFin(const T &dato) {
-        ++tama;
+
         Nodo <T> *nuevoP = new Nodo<T>(dato,0);
         if(cola)
             cola->sig = nuevoP;
         //Si la lista esta vacia
         if(!cabecera)
             cabecera = nuevoP;
-       // cola = nuevoP;
+        cola = nuevoP;
+        tama++;
 
     }
     /**
